@@ -25,7 +25,8 @@ module Securities
 			# puts parameters
 			# puts parameters.class
 			validate_history(parameters)
-			@url = generate_url(parameters)
+			urls = generate_url(parameters)
+			Securities::Scraper.new(@type, urls)
 		end
 
 		private
@@ -65,19 +66,24 @@ module Securities
 										when :dividends then 'v'
 									 end
 
+				@results = Hash.new
 				@symbols.each do |symbol|
 					url = 'http://ichart.finance.yahoo.com/table.csv?s=%s&a=%s&b=%s&c=%s&d=%s&e=%s&f=%s&g=%s&ignore=.csv' % [
 						symbol,
-						@start_date.month,
+						@start_date.month - 1,
 						@start_date.day,
 						@start_date.year,
-						@end_date.month,
+						@end_date.month - 1,
 						@end_date.day,
 						@end_date.year,
 						@periods
 					]
-					puts url
+					@results[symbol] = url
 				end
+				#
+				# Returns a hash {'symbol' => 'url'}
+				#
+				return @results
 			else
 				raise StockException, 'The type is alien.'
 			end
@@ -116,6 +122,7 @@ module Securities
 				raise StockException, 'Invalid :end_date specified. Format YYYY-MM-DD.'
 			end
 
+			# Set to default :periods if key isn't specified.
 			unless parameters.has_key?(:periods)
 				parameters[:periods] = :daily
 			end

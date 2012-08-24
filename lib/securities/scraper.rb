@@ -9,12 +9,28 @@ module Securities
   #
 	class Scraper
 
+    attr_reader :results
+
     # Error handling
     class ScraperException < StandardError
     end
 
-    def initialize parameters
-      # Scrape
+    def initialize type, parameters
+      @results = Hash.new
+      parameters.each do |symbol, url|
+
+        uri = URI.parse(url)
+        get = Net::HTTP.get(uri)
+        csv = CSV.parse(get, :headers => true)
+        # Skip first line because it contains headers with Date,Open,High,Low,Close,Volume,Adj Close
+
+        data = Array.new
+        csv.each_with_index {|row, index|
+          data[index] = {:date => row[0], :open => row[1], :high => row[2], :low => row[3], :close => row[4], :volume => row[5], :adj_close => row[6]}
+        }
+        @results[symbol] = data 
+      end
+      return @results
     end
 
 	end
