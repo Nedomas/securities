@@ -1,7 +1,7 @@
 require 'active_support/core_ext'
-require 'csv'
-require 'net/http'
 require 'uri'
+require 'net/http'
+require 'csv'
 
 module Securities
   #
@@ -10,7 +10,6 @@ module Securities
 	class Scraper
 
     attr_reader :results
-
     # Error handling
     class ScraperException < StandardError
     end
@@ -21,18 +20,24 @@ module Securities
       # Manage different type requests.
       case type
         when :history then @results = scrape_history(parameters)
-        else raise ScraperException, 'Cannot determine request type'
+        else raise ScraperException, 'Cannot determine request type.'
       end
-      return @results
     end
 
     def scrape_history parameters
       parameters.each do |symbol, url|
 
         uri = URI.parse(url)
-        get = Net::HTTP.get(uri)
-        csv = CSV.parse(get, :headers => true)
+
+        # Check connection
+        begin
+          get = Net::HTTP.get(uri)
+        rescue => error
+          raise ScraperException, "Connection error: #{error.message}"
+        end
+
         # Skip first line because it contains headers with Date,Open,High,Low,Close,Volume,Adj Close
+        csv = CSV.parse(get, :headers => true)
 
         data = Array.new
         csv.each_with_index {|row, index|

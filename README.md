@@ -1,6 +1,6 @@
 # Securities
 
-Financial information scraper and a technical analysis tool.
+Financial information scraper gem.
 
 ## Installation
 
@@ -21,11 +21,11 @@ Or install it yourself as:
 You can get stock information with commands:
 
 	my_stocks = Securities::Stock.new('aapl', 'yhoo').history(:start_date => '2012-01-01', :end_date => '2012-02-01', :periods => :weekly)
-	:periods accepts :daily, :weekly, :monthly, :dividend. If not specified, it defaults to :daily.
+	Optional parameter :periods accepts :daily, :weekly, :monthly, :dividend. If not specified, it defaults to :daily.
 
 You can access hash for a single stock with:
 
-	my_stock.results["yhoo"]
+	my_stocks.results["yhoo"]
 
 Results are returned in a hash:
 
@@ -34,11 +34,11 @@ Results are returned in a hash:
 
 ## To do:
 
-* Write specs
+* Write specs.
 * Add quote info (P/E, P/S, etc.)
-* Add symbol from name lookup
-* Add options support
-* Add technical analysis module (or a seperate gem which works in cojunction with this)
+* Add symbol from name lookup.
+* Add options support.
+* Add technical analysis module (or a seperate gem which works in synergy with this).
 
 ## Contributing
 
