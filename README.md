@@ -19,15 +19,15 @@ Or install it yourself as:
 ## Usage
 
 You can get stock information with commands:
-	my_stocks = Securities::Stock.new('aapl', 'yhoo').history(:start_date => '2012-01-01', :end_date => '2012-02-01', :periods => :weekly)
-	:periods accepts :daily, :weekly, :monthly, :dividend. If not specified, it defaults to :daily.
+		my_stocks = Securities::Stock.new('aapl', 'yhoo').history(:start_date => '2012-01-01', :end_date => '2012-02-01', :periods => :weekly)
+		:periods accepts :daily, :weekly, :monthly, :dividend. If not specified, it defaults to :daily.
 
 You can view access hash for a single stock with 
-	my_stock.results["yhoo"]
+		my_stock.results["yhoo"]
 
 Results are returned in a hash:
-	{"aapl"=>[{:date=>"2012-01-04", :open=>"410.00", :high=>"414.68", :low=>"409.28", :close=>"413.44", :volume=>"9286500", :adj_close=>"411.67"}, {:date=>"2012-01-03", :open=>"409.40", :high=>"412.50", :low=>"409.00", :close=>"411.23", :volume=>"10793600", :adj_close=>"409.47"}], 
-	"yhoo"=>[{:date=>"2012-01-04", :open=>"16.12", :high=>"16.16", :low=>"15.74", :close=>"15.78", :volume=>"35655300", :adj_close=>"15.78"}, {:date=>"2012-01-03", :open=>"16.27", :high=>"16.39", :low=>"16.20", :close=>"16.29", :volume=>"19708600", :adj_close=>"16.29"}]}
+		{"aapl"=>[{:date=>"2012-01-04", :open=>"410.00", :high=>"414.68", :low=>"409.28", :close=>"413.44", :volume=>"9286500", :adj_close=>"411.67"}, {:date=>"2012-01-03", :open=>"409.40", :high=>"412.50", :low=>"409.00", :close=>"411.23", :volume=>"10793600", :adj_close=>"409.47"}], 
+		"yhoo"=>[{:date=>"2012-01-04", :open=>"16.12", :high=>"16.16", :low=>"15.74", :close=>"15.78", :volume=>"35655300", :adj_close=>"15.78"}, {:date=>"2012-01-03", :open=>"16.27", :high=>"16.39", :low=>"16.20", :close=>"16.29", :volume=>"19708600", :adj_close=>"16.29"}]}
 
 
 ## Contributing
