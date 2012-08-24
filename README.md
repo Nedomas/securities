@@ -1,5 +1,7 @@
 # Securities
 
+[![Build Status](https://secure.travis-ci.org/Nedomas/securities.png)](http://travis-ci.org/Nedomas/securities)
+
 Financial information scraper gem.
 
 ## Installation
