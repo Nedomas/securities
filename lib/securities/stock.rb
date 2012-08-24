@@ -22,8 +22,6 @@ module Securities
 		def history parameters
 			@type = :history
 			parameters[:symbols] = @symbols
-			# puts parameters
-			# puts parameters.class
 			validate_history(parameters)
 			urls = generate_url(parameters)
 			Securities::Scraper.new(@type, urls)
@@ -56,34 +54,34 @@ module Securities
 			# URL for stock history prices.
 			# TODO: Accept type :quote for more detailed info (P/E, P/S, etc.)
 			if @type == :history
-				@start_date = parameters[:start_date].to_date
-				@end_date = parameters[:end_date].to_date
+				start_date = parameters[:start_date].to_date
+				end_date = parameters[:end_date].to_date
 
-				@periods = case parameters[:periods]
+				periods = case parameters[:periods]
 										when :daily 		then 'd'
 										when :weekly 		then 'w'
 										when :monthly 	then 'm'
 										when :dividends then 'v'
 									 end
 
-				@results = Hash.new
+				results = Hash.new
 				@symbols.each do |symbol|
 					url = 'http://ichart.finance.yahoo.com/table.csv?s=%s&a=%s&b=%s&c=%s&d=%s&e=%s&f=%s&g=%s&ignore=.csv' % [
 						symbol,
-						@start_date.month - 1,
-						@start_date.day,
-						@start_date.year,
-						@end_date.month - 1,
-						@end_date.day,
-						@end_date.year,
-						@periods
+						start_date.month - 1,
+						start_date.day,
+						start_date.year,
+						end_date.month - 1,
+						end_date.day,
+						end_date.year,
+						periods
 					]
-					@results[symbol] = url
+					results[symbol] = url
 				end
 				#
 				# Returns a hash {'symbol' => 'url'}
 				#
-				return @results
+				return results
 			else
 				raise StockException, 'The type is alien.'
 			end
