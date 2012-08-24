@@ -1,8 +1,6 @@
 require "securities/version"
 require "securities/scraper"
+require "securities/stock"
 
 module Securities
-  def self.get(ticker)
-    Scraper.new(ticker)
-  end
 end
