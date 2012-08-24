@@ -17,6 +17,16 @@ module Securities
 
     def initialize type, parameters
       @results = Hash.new
+
+      # Manage different type requests.
+      case type
+        when :history then @results = scrape_history(parameters)
+        else raise ScraperException, 'Cannot determine request type'
+      end
+      return @results
+    end
+
+    def scrape_history parameters
       parameters.each do |symbol, url|
 
         uri = URI.parse(url)
