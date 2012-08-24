@@ -18,13 +18,8 @@ Or install it yourself as:
 
 ## Usage
 
-	require 'securities'
-
-	# Get stocks information
-	Securities.Stocks('AAPL')
-
-	# Get FX information
-	Securities.FX('EUR/USD')
+		Usage: Securities::Stock.new('aapl', 'yhoo').history(:start_date => '2012-01-01', :end_date => '2012-02-01', :periods => :weekly)
+		:periods accepts :daily, :weekly, :monthly, :dividend. If not specified, it defaults to :daily.
 
 ## Contributing
 
