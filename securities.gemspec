@@ -4,8 +4,8 @@ require File.expand_path('../lib/securities/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["Nedomas"]
   gem.email         = ["domas.bitvinskas@me.com"]
-  gem.description   = %q{Financial information scraper and a technical analysis tool.}
-  gem.summary       = %q{Financial information scraper and a technical analysis tool.}
+  gem.description   = %q{Financial information scraper gem.}
+  gem.summary       = %q{Financial information scraper gem.}
   gem.homepage      = "https://github.com/Nedomas/securities"
 
   gem.files         = `git ls-files`.split($\)
