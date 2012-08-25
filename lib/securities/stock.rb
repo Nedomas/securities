@@ -88,12 +88,17 @@ module Securities
 		# Input parameters validation
 		#
 		def validate_symbols parameters
+			
 			# Reject empty symbol hashes.
 			@symbols = parameters.reject(&:empty?)
 
 			unless !@symbols.empty?
 				raise StockException, 'You must specify stock symbols.'
 			end
+
+			# FIXME: A kinda hacky way to check if parameters are a nested array (when accepting an array as a symbols argument).
+			# Unnesting an array.
+			@symbols[0].is_a?(Array) ? @symbols = @symbols[0] : nil
 
 			unless @symbols.uniq.length == @symbols.length
 				raise StockException, 'Duplicate symbols given.'
