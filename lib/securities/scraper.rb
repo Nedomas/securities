@@ -37,12 +37,28 @@ module Securities
         end
 
         # Skip first line because it contains headers with Date,Open,High,Low,Close,Volume,Adj Close
-        csv = CSV.parse(get, :headers => true)
+        # Check for errors during CSV parsing.
+        begin
+          csv = CSV.parse(get, :headers => true)
+        rescue => error
+          # PROBABLY an invalid symbol specified or there was some other way the parser couldn't read a CSV.
+          raise ScraperException, "Invalid symbols specified."
+        end
 
         data = Array.new
-        csv.each_with_index {|row, index|
-          data[index] = {:date => row[0], :open => row[1], :high => row[2], :low => row[3], :close => row[4], :volume => row[5], :adj_close => row[6]}
-        }
+        csv.each_with_index do |row, index|
+          line = Hash.new
+          csv.headers.each_with_index do |header, i|
+            # Set headers as keys for data hash.
+            line[header.parameterize.underscore.to_sym] = row[i]
+            data[index] = line
+          end
+        end
+
+        if data.empty?
+          raise ScraperException, 'There were no results for these parameters.'
+        end
+
         @results[symbol] = data 
       end
       return @results

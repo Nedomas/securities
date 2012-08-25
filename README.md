@@ -74,6 +74,9 @@ Results are returned in a hash:
 
 ## To do:
 
+* Fix monthly+ and dividends+
+* Fix exception messages for friendlier displaying to end-user+ (and invalid symbol error=>"Illegal quoting in line 1.")+.
+* Rescue empty results error.+
 * Write specs.
 * Add quote info (P/E, P/S, etc.)
 * Add symbol from name lookup.

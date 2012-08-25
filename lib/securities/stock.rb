@@ -11,7 +11,7 @@ module Securities
 		attr_reader :symbols
 		# REGEX for YYYY-MM-DD
 		DATE_REGEX = /^[0-9]{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])/
-		PERIODS_ARRAY = [:daily, :weekly, :montly, :dividends]
+		PERIODS_ARRAY = [:daily, :weekly, :monthly, :dividends]
 
 		# Error handling
 		class StockException < StandardError
@@ -93,7 +93,7 @@ module Securities
 			@symbols = parameters.reject(&:empty?)
 
 			unless !@symbols.empty?
-				raise StockException, 'You must specify stock symbols.'
+				raise StockException, 'You must specify at least one stock symbol.'
 			end
 
 			# FIXME: A kinda hacky way to check if parameters are a nested array (when accepting an array as a symbols argument).
@@ -101,7 +101,7 @@ module Securities
 			@symbols[0].is_a?(Array) ? @symbols = @symbols[0] : nil
 
 			unless @symbols.uniq.length == @symbols.length
-				raise StockException, 'Duplicate symbols given.'
+				raise StockException, 'Duplicate stock symbols given.'
 			end
 		end
 
@@ -111,30 +111,30 @@ module Securities
 			end
 
 			unless parameters.has_keys?(:start_date, :end_date)
-				raise StockException, 'You must specify :start_date and :end_date.'
+				raise StockException, 'You must specify start date and end date.'
 			end
  
 			unless DATE_REGEX.match(parameters[:start_date])
-				raise StockException, 'Invalid :start_date specified. Format YYYY-MM-DD.'
+				raise StockException, 'Invalid start date specified. Format YYYY-MM-DD.'
 			end
 
 			unless DATE_REGEX.match(parameters[:end_date])
-				raise StockException, 'Invalid :end_date specified. Format YYYY-MM-DD.'
+				raise StockException, 'Invalid end date specified. Format YYYY-MM-DD.'
 			end
 
 			unless parameters[:start_date].to_date < parameters[:end_date].to_date
-				raise StockException, ':end_date must be greater than the :start_date.'
+				raise StockException, 'End date must be greater than the start date.'
 			end
 
 			unless parameters[:start_date].to_date < Date.today
-				raise StockException, ':start_date must not be in the future.'
+				raise StockException, 'Start date must not be in the future.'
 			end
 
 			# Set to default :periods if key isn't specified.
 			parameters[:periods] = :daily if !parameters.has_key?(:periods)
 
 			unless PERIODS_ARRAY.include?(parameters[:periods])
-				raise StockException, 'Invalid :periods value specified.'
+				raise StockException, 'Invalid periods value specified.'
 			end
 		end
 
