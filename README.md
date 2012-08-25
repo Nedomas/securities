@@ -22,25 +22,25 @@ Or install it yourself as:
 
 You can get stock information with commands:
 
-	my_stocks = Securities::Stock.new('aapl', 'yhoo').history(:start_date => '2012-01-01', 
-																														:end_date => '2012-02-01', 
-																														:periods => :weekly)
+	my_stocks = Securities::Stock.new('aapl', 'yhoo')
+	my_data = my_stocks.history(:start_date => '2012-01-01', :end_date => '2012-02-01', :periods => :weekly)
+	
 	Optional parameter :periods accepts :daily, :weekly, :monthly, :dividend. If not specified, it defaults to :daily.
 
 You can access hash for a single stock with:
 
-	my_stocks.results["yhoo"]
+	my_data.results["yhoo"]
 
 Results are returned in a hash:
 
 	{"aapl"=>
 		[{:date=>"2012-01-04",
-			:open=>"410.00",
-			:high=>"414.68", 
-			:low=>"409.28", 
-			:close=>"413.44", 
-			:volume=>"9286500", 
-			:adj_close=>"411.67"}, 
+		:open=>"410.00",
+		:high=>"414.68", 
+		:low=>"409.28", 
+		:close=>"413.44", 
+		:volume=>"9286500", 
+		:adj_close=>"411.67"}, 
 		 {:date=>"2012-01-03", 
 		  :open=>"409.40", 
 		  :high=>"412.50", 
