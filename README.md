@@ -1,7 +1,7 @@
 # Securities
 
 Financial information scraper gem. 
-Uses Yahoo Finance API.
+Uses Yahoo Finance API. Current functionality demo: http://strangemuseum.heroku.com
 
 [![Build Status](https://secure.travis-ci.org/Nedomas/securities.png)](http://travis-ci.org/Nedomas/securities)[![Build Status](https://gemnasium.com/Nedomas/securities.png)](https://gemnasium.com/Nedomas/securities)
 
@@ -77,6 +77,7 @@ Results are returned in a hash:
 * Fix monthly+ and dividends+
 * Fix exception messages for friendlier displaying to end-user+ (and invalid symbol error=>"Illegal quoting in line 1.")+.
 * Rescue empty results error.+
+* Let it raise exception on one symbol, but continue on other and send the message.
 * Write specs.
 * Add quote info (P/E, P/S, etc.)
 * Add symbol from name lookup.

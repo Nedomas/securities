@@ -42,7 +42,8 @@ module Securities
           csv = CSV.parse(get, :headers => true)
         rescue => error
           # PROBABLY an invalid symbol specified or there was some other way the parser couldn't read a CSV.
-          raise ScraperException, "Invalid symbols specified."
+          # FIXME: Let it raise exception on one symbol, but continue on other and send the message.
+          raise ScraperException, "Invalid symbol '#{symbol}' specified."
         end
 
         data = Array.new
@@ -55,6 +56,7 @@ module Securities
           end
         end
 
+        # FIXME: Let it raise exception on one symbol, but continue on other and send the message.
         if data.empty?
           raise ScraperException, 'There were no results for these parameters.'
         end
