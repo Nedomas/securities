@@ -77,7 +77,8 @@ Results are returned in a hash:
 * Fix monthly+ and dividends+
 * Fix exception messages for friendlier displaying to end-user+ (and invalid symbol error=>"Illegal quoting in line 1.")+.
 * Rescue empty results error.+
-* Let it raise exception on one symbol, but continue on other and send the message.
+* BUG: Let it raise exception on one symbol, but continue on other and send the message. <= Now it just returns an empty array if the exception wasn't fatal.+
+
 * Write specs.
 * Add quote info (P/E, P/S, etc.)
 * Add symbol from name lookup.

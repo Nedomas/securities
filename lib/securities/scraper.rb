@@ -43,7 +43,11 @@ module Securities
         rescue => error
           # PROBABLY an invalid symbol specified or there was some other way the parser couldn't read a CSV.
           # FIXME: Let it raise exception on one symbol, but continue on other and send the message.
-          raise ScraperException, "Invalid symbol '#{symbol}' specified."
+          # It will no longer raise exception because it causes a bug.
+          # bug => if exception occurs in one symbol, it will not give any results for any other.
+          # raise ScraperException, "Invalid symbol '#{symbol}' specified."
+          @results[symbol] = []
+          next
         end
 
         data = Array.new
@@ -57,9 +61,11 @@ module Securities
         end
 
         # FIXME: Let it raise exception on one symbol, but continue on other and send the message.
-        if data.empty?
-          raise ScraperException, 'There were no results for these parameters.'
-        end
+        # It will no longer raise exception if data is empty, because it causes a 
+        # bug => if exception occurs in one symbol, it will not give any results for any other.
+        # if data.empty?
+        #     raise ScraperException, "There were no results for #{symbol}."
+        # end
 
         @results[symbol] = data 
       end
