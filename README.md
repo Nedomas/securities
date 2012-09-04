@@ -1,7 +1,7 @@
 # Securities
 
 Financial information scraper gem. 
-Uses Yahoo Finance API. Current functionality demo: http://strangemuseum.heroku.com
+Uses Yahoo Finance API. Current functionality demo of this gem, working in synergy with gem ta: http://strangemuseum.heroku.com
 
 [![Build Status](https://secure.travis-ci.org/Nedomas/securities.png)](http://travis-ci.org/Nedomas/securities)[![Build Status](https://gemnasium.com/Nedomas/securities.png)](https://gemnasium.com/Nedomas/securities)
 
@@ -35,11 +35,15 @@ You can get stock information with commands:
 	
 	Optional parameter :periods accepts :daily, :weekly, :monthly, :dividend. If not specified, it defaults to :daily.
 
+	End date defaults to today if not specified.
+
 You can access hash for a single stock with:
 
-	my_data.results["yhoo"]
+	my_data["yhoo"]
 
-Results are returned in a hash:
+	or my_stocks.output["yhoo"]
+
+Output is returned in a hash:
 
 	{"aapl"=>
 		[{:date=>"2012-01-04",
@@ -72,18 +76,30 @@ Results are returned in a hash:
 		:volume=>"19708600", 
 		:adj_close=>"16.29"}]}
 
-## To do:
+# Version 1.0.0
 
-* Fix monthly+ and dividends+
-* Fix exception messages for friendlier displaying to end-user+ (and invalid symbol error=>"Illegal quoting in line 1.")+.
-* Rescue empty results error.+
-* BUG: Let it raise exception on one symbol, but continue on other and send the message. <= Now it just returns an empty array if the exception wasn't fatal.+
+* Results are returned in a reversed manner from 0.1.2. Array begins from the oldest data points.
+* Only Stock class initializes an object so you can do:
+
+	my_stocks = Securities::Stock.new(["aapl", "yhoo"]) 
+	my_stocks.history(:start_date => '2012-01-01', :end_date => '2012-02-01', :periods => :weekly) 
+	^ adds @ouput variable to the my_stocks object. ^
+
+	And get output with:
+	my_stocks.output or my_stocks.output["aapl"]
+
+	Given symbols, dates and periods with:
+	my_stocks.symbols
+	my_stocks.start_date
+	my_stocks.end_date
+	my_stocks.periods
+
+## To do:
 
 * Write specs.
 * Add quote info (P/E, P/S, etc.)
 * Add symbol from name lookup.
 * Add options support.
-* Add technical analysis module (or a seperate gem which works in synergy with this).
 
 ## Contributing
 

@@ -9,22 +9,23 @@ module Securities
   #
 	class Scraper
 
-    attr_reader :results
     # Error handling
     class ScraperException < StandardError
     end
 
-    def initialize type, parameters
-      @results = Hash.new
+    def self.get type, parameters
 
       # Manage different type requests.
       case type
-        when :history then @results = scrape_history(parameters)
+        when :history then results = scrape_history(parameters)
         else raise ScraperException, 'Cannot determine request type.'
       end
+
+      return results
     end
 
-    def scrape_history parameters
+    def self.scrape_history parameters
+      results = Hash.new
       parameters.each do |symbol, url|
 
         uri = URI.parse(url)
@@ -42,11 +43,10 @@ module Securities
           csv = CSV.parse(get, :headers => true)
         rescue => error
           # PROBABLY an invalid symbol specified or there was some other way the parser couldn't read a CSV.
-          # FIXME: Let it raise exception on one symbol, but continue on other and send the message.
           # It will no longer raise exception because it causes a bug.
           # bug => if exception occurs in one symbol, it will not give any results for any other.
           # raise ScraperException, "Invalid symbol '#{symbol}' specified."
-          @results[symbol] = []
+          results[symbol] = []
           next
         end
 
@@ -60,16 +60,15 @@ module Securities
           end
         end
 
-        # FIXME: Let it raise exception on one symbol, but continue on other and send the message.
         # It will no longer raise exception if data is empty, because it causes a 
         # bug => if exception occurs in one symbol, it will not give any results for any other.
         # if data.empty?
         #     raise ScraperException, "There were no results for #{symbol}."
         # end
 
-        @results[symbol] = data 
+        results[symbol] = data.reverse
       end
-      return @results
+      return results
     end
 
 	end

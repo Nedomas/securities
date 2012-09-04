@@ -4,11 +4,11 @@ module Securities
 	# :periods accepts :daily, :weekly, :monthly, :dividend. If not specified, it defaults to :daily.
 	#
 	# You can access hash for a single stock with:
-	# my_stocks.results["yhoo"]
+	# my_stocks["yhoo"]
 
 	class Stock
 
-		attr_reader :symbols
+		attr_accessor :symbols, :output, :start_date, :end_date, :periods
 		# REGEX for YYYY-MM-DD
 		DATE_REGEX = /^[0-9]{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])/
 		PERIODS_ARRAY = [:daily, :weekly, :monthly, :dividends]
@@ -26,11 +26,15 @@ module Securities
 			parameters[:symbols] = @symbols
 			validate_history(parameters)
 			urls = generate_history_url(parameters)
-			Securities::Scraper.new(type, urls)
+			@start_date = parameters[:start_date]
+			@end_date = parameters[:end_date]
+			@periods = parameters[:periods]
+			@output = Securities::Scraper.get(type, urls)
 		end
 
 		private
 
+		#
 		# History URL generator
 		#
 		# Generating URL for various types of requests within stocks.
@@ -92,7 +96,7 @@ module Securities
 			# Reject empty symbol hashes.
 			@symbols = parameters.reject(&:empty?)
 
-			unless !@symbols.empty?
+			if @symbols.nil?
 				raise StockException, 'You must specify at least one stock symbol.'
 			end
 
@@ -110,10 +114,14 @@ module Securities
 				raise StockException, 'Given parameters have to be a hash.'
 			end
 
-			unless parameters.has_keys?(:start_date, :end_date)
-				raise StockException, 'You must specify start date and end date.'
+			unless parameters.has_key?(:end_date)
+				parameters[:end_date] = Date.today.strftime("%Y-%m-%d")
 			end
- 
+
+			unless parameters.has_key?(:start_date)
+				raise StockException, 'Start date must be specified.'
+			end
+ 			
 			unless DATE_REGEX.match(parameters[:start_date])
 				raise StockException, 'Invalid start date specified. Format YYYY-MM-DD.'
 			end
