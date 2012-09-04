@@ -79,6 +79,7 @@ Output is returned in a hash:
 # Version 1.0.0
 
 Results are returned in a reversed manner from 0.1.2. Array begins from the oldest data points.
+
 Only Stock class initializes an object so you can do:
 
 	my_stocks = Securities::Stock.new(["aapl", "yhoo"]) 
