@@ -35,7 +35,7 @@ You can get stock information with commands:
 	
 	Optional parameter :periods accepts :daily, :weekly, :monthly, :dividend. If not specified, it defaults to :daily.
 
-	End date defaults to today if not specified.
+	:end_date defaults to Date.today if not specified.
 
 You can access hash for a single stock with:
 
@@ -78,8 +78,8 @@ Output is returned in a hash:
 
 # Version 1.0.0
 
-* Results are returned in a reversed manner from 0.1.2. Array begins from the oldest data points.
-* Only Stock class initializes an object so you can do:
+Results are returned in a reversed manner from 0.1.2. Array begins from the oldest data points.
+Only Stock class initializes an object so you can do:
 
 	my_stocks = Securities::Stock.new(["aapl", "yhoo"]) 
 	my_stocks.history(:start_date => '2012-01-01', :end_date => '2012-02-01', :periods => :weekly) 
