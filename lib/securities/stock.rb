@@ -1,35 +1,29 @@
 module Securities
 
-	# Usage: my_stocks = Securities::Stock.new('aapl', 'yhoo').history(:start_date => '2012-01-01', :end_date => '2012-02-01', :periods => :weekly)
-	# :periods accepts :daily, :weekly, :monthly, :dividend. If not specified, it defaults to :daily.
-	#
-	# You can access hash for a single stock with:
-	# my_stocks["yhoo"]
-
 	class Stock
 
-		attr_accessor :symbols, :output, :start_date, :end_date, :periods
+		attr_accessor :symbol, :output, :start_date, :end_date, :type
 		# REGEX for YYYY-MM-DD
 		DATE_REGEX = /^[0-9]{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])/
-		PERIODS_ARRAY = [:daily, :weekly, :monthly, :dividends]
+		TYPES_ARRAY = [:daily, :weekly, :monthly, :dividends]
 
 		# Error handling
 		class StockException < StandardError
 		end
 
-		def initialize *parameters
-			validate_symbols(parameters)
+		def initialize parameter
+			@symbol = validate_symbol(parameter)
 		end
 
 		def history parameters
-			type = :history
-			parameters[:symbols] = @symbols
+			request = :history
 			validate_history(parameters)
-			urls = generate_history_url(parameters)
+			parameters[:symbol] = @symbol
 			@start_date = parameters[:start_date]
 			@end_date = parameters[:end_date]
-			@periods = parameters[:periods]
-			@output = Securities::Scraper.get(type, urls)
+			@type = parameters[:type]
+			urls = generate_history_url
+			@output = Securities::Scraper.get(request, urls)
 		end
 
 		private
@@ -42,71 +36,60 @@ module Securities
 		# Using Yahoo Finance
 		# http://ichart.finance.yahoo.com/table.csv?s=%s&a=%s&b=%s&c=%s&d=%s&e=%s&f=%s&g=%s&ignore=.csv
 		# 
-		# s = ticker symbol.
+		# s = stock symbol
 		#
 		# Start date
-		# a = start_month
-		# b = start_day
-		# c = start_year
+		# a = start month
+		# b = start day
+		# c = start year
 		#
 		# End date
-		# d = end_month
-		# e = end_day
-		# f = end_year
+		# d = end month
+		# e = end day
+		# f = end year
 		#
-		# g = :periods 
-		# Possible values are 'd' for daily (the default), 'w' for weekly, 'm' for monthly and 'v' for dividends.
+		# g = :type
+		# Type values allowed: 'd' for daily (the default), 'w' for weekly, 'm' for monthly and 'v' for dividends.
+		def generate_history_url
 
-		def generate_history_url parameters
-
-			start_date = parameters[:start_date].to_date
-			end_date = parameters[:end_date].to_date
-
-			periods = case parameters[:periods]
+			# FIX: Should keep it cleaner.
+			type_code = case @type
 									when :daily 		then 'd'
 									when :weekly 		then 'w'
 									when :monthly 	then 'm'
 									when :dividends then 'v'
 								 end
 
-			results = Hash.new
-			@symbols.each do |symbol|
-				url = 'http://ichart.finance.yahoo.com/table.csv?s=%s&a=%s&b=%s&c=%s&d=%s&e=%s&f=%s&g=%s&ignore=.csv' % [
-					symbol,
-					start_date.month - 1,
-					start_date.day,
-					start_date.year,
-					end_date.month - 1,
-					end_date.day,
-					end_date.year,
-					periods
-				]
-				results[symbol] = url
-			end
+			url = 'http://ichart.finance.yahoo.com/table.csv?s=%s&a=%s&b=%s&c=%s&d=%s&e=%s&f=%s&g=%s&ignore=.csv' % [
+				@symbol,
+				@start_date.to_date.month - 1,
+				@start_date.to_date.day,
+				@start_date.to_date.year,
+				@end_date.to_date.month - 1,
+				@end_date.to_date.day,
+				@end_date.to_date.year,
+				type_code
+			]
 
-			# Returns a hash {'symbol' => 'url'}
-			return results
+			return url
 		end
 
 		#
 		# Input parameters validation
 		#
-		def validate_symbols parameters
+		def validate_symbol parameter
 			
-			# Reject empty symbol hashes.
-			@symbols = parameters.reject(&:empty?)
-
-			if @symbols.nil?
-				raise StockException, 'You must specify at least one stock symbol.'
+			# Check if stock symbol is a string.
+			unless parameter.is_a?(String)
+				raise StockException, 'Stock symbol must be a string.'
+			end
+			# Check if stock symbol is valid.
+			unless parameter.match('^[a-zA-Z0-9]+$')
+				raise StockException, 'Invalid stock symbol specified.'
 			end
 
-			# FIXME: A kinda hacky way to check if parameters are a nested array (when accepting an array as a symbols argument).
-			# Unnesting an array.
-			@symbols[0].is_a?(Array) ? @symbols = @symbols[0] : nil
+			return parameter
 
-			unless @symbols.uniq.length == @symbols.length
-				raise StockException, 'Duplicate stock symbols given.'
-			end
 		end
 
 		def validate_history parameters
@@ -114,6 +97,7 @@ module Securities
 				raise StockException, 'Given parameters have to be a hash.'
 			end
 
+			# Use today date if :end_date is not specified.
 			unless parameters.has_key?(:end_date)
 				parameters[:end_date] = Date.today.strftime("%Y-%m-%d")
 			end
@@ -138,23 +122,13 @@ module Securities
 				raise StockException, 'Start date must not be in the future.'
 			end
 
-			# Set to default :periods if key isn't specified.
-			parameters[:periods] = :daily if !parameters.has_key?(:periods)
+			# Set to default :type if key isn't specified.
+			parameters[:type] = :daily if !parameters.has_key?(:type)
 
-			unless PERIODS_ARRAY.include?(parameters[:periods])
-				raise StockException, 'Invalid periods value specified.'
+			unless TYPES_ARRAY.include?(parameters[:type])
+				raise StockException, 'Invalid type specified.'
 			end
 		end
 
-	end
-end
-
-#
-# The missing hash function
-# Returns true if all keys are present in hash.
-#
-class Hash
-	def has_keys?(*_keys)
-  	(_keys - self.keys).empty?
 	end
 end
