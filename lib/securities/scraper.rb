@@ -15,7 +15,10 @@ module Securities
 
     def self.get type, url
       results = Array.new
-      uri = URI.parse(url)
+      
+      # Encoding for bad characters in index names.
+      clean_url = URI::encode(url)
+      uri = URI.parse(clean_url)
 
       # Check connection.
       begin
