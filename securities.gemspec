@@ -16,5 +16,6 @@ Gem::Specification.new do |gem|
   gem.version       = Securities::VERSION
 
   gem.add_dependency 'rails'
+  gem.add_dependency 'nokogiri'
   gem.add_development_dependency 'rspec'
 end

@@ -23,9 +23,7 @@ Or install it yourself as:
 
 You can get stock information with commands:
 
-	my_stocks = Securities::Stock.new('AAPL')
-
-	my_data = my_stocks.history(:start_date => '2012-01-01', :end_date => '2012-02-01', :type => :weekly)
+	my_stocks = Securities::Stock.new(:symbol => 'AAPL', :start_date => '2012-01-01', :end_date => '2012-02-01', :type => :weekly)
 	
 	Optional parameter :type accepts :daily, :weekly, :monthly, :dividend. If not specified, it defaults to :daily.
 
@@ -33,9 +31,11 @@ You can get stock information with commands:
 
 You can access hash for a single stock with:
 
-	my_data
-
-	or my_stocks.output
+	my_stocks.output
+	my_stocks.symbol
+	my_stocks.start_date
+	my_stocks.end_date
+	my_stocks.type
 
 Output is returned in a hash:
 
@@ -54,29 +54,39 @@ Output is returned in a hash:
 		:volume=>"9286500", 
 		:adj_close=>"411.67"}]
 
-# Version 1.0.0
+Stock symbol lookup:
+	
+	my_lookup = Securities::Lookup.new('Google')
 
-Results are returned in a reversed manner from 0.1.2. Array begins from the oldest data points.
+Returns a hash with matched symbol, name, last trade, type, industry/category, exchange.
 
-Only Stock class initializes an object so you can do:
+	my_lookup.output
 
-	my_stocks = Securities::Stock.new('AAPL') 
-	my_stocks.history(:start_date => '2012-01-01', :end_date => '2012-02-01', :type => :weekly) 
-	^ adds @ouput variable to the my_stocks object. ^
+		[{:symbol=>"GOOG",
+		 :name=>"Google Inc.",
+		 :last_trade=>"726.31",
+		 :type=>"Stock", 
+		 :industry_category=>"Internet Information Providers", 
+		 :exchange=>"NMS"}, 
+		 {:symbol=>"GOOG.MX", 
+		 :name=>"Google Inc.", 
+		 :last_trade=>"9,306.00", 
+		 :type=>"Stock", 
+		 :industry_category=>"Internet Information Providers", 
+		 :exchange=>"MEX"}, 
+		 ...]
 
-	Access output with:
-	my_stocks.output
+	 my_lookup.input returns 'Google'
 
-	Given symbol, dates and type with:
-	my_stocks.symbol
-	my_stocks.start_date
-	my_stocks.end_date
-	my_stocks.type
+# Version 2.0.0
+
+* Adds support for stock symbol lookup.
+
+* Removes support for multiple stock input cause it complects the gem code and its implementation without adding much to it. 
 
 ## To do:
 
 * Add quote info (P/E, P/S, etc.)
-* Add symbol from name lookup.
 * Add options support.
 
 ## Contributing
