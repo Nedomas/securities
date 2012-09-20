@@ -10,7 +10,7 @@ module Securities
 
     def initialize parameters
     	@input = parameters
-    	if @input.empty?
+    	if @input.delete(' ').empty?
     		raise LookupException, 'The lookup input was empty.'
     	end
     	url = generate_lookup_url
