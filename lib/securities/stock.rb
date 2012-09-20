@@ -78,10 +78,6 @@ module Securities
 				unless parameters[:symbol].is_a?(String)
 					raise StockException, 'Stock symbol must be a string.'
 				end
-				# Check if stock symbol is valid.
-				unless parameters[:symbol].match('^[a-zA-Z0-9]+$')
-					raise StockException, 'Invalid stock symbol specified.'
-				end
 
 				# Use today date if :end_date is not specified.
 				unless parameters.has_key?(:end_date)

@@ -16,7 +16,7 @@ describe Securities::Stock do
 		      expect { Securities::Stock.new(:symbol => ["AAPL", "GOOG"], :start_date => '2012-01-01', :end_date => '2012-01-04') }.to raise_error('Stock symbol must be a string.')
 		    end
 		    it "is an invalid string" do
-		      expect { Securities::Stock.new(:symbol => 'AAPL company', :start_date => '2012-01-01', :end_date => '2012-01-04') }.to raise_error('Invalid stock symbol specified.')
+		      expect { Securities::Stock.new(:symbol => 'AAPL company', :start_date => '2012-01-01', :end_date => '2012-01-04') }.to raise_error('Stock symbol does not exist.')
 		    end
 		  end
 
@@ -54,6 +54,9 @@ describe Securities::Stock do
 	    it ":type is not specified (defaults to :daily)" do
 	    	expect { @my_stocks = Securities::Stock.new(:symbol => 'AAPL', :start_date => (Date.today-8).strftime("%Y-%m-%d")) }.not_to raise_error
 	    	@my_stocks.type.should eq(:daily)
+	    end
+	    it ":symbol is an Index" do
+	    	expect { Securities::Stock.new(:symbol => '^GSPC', :start_date => '2012-01-01', :end_date => '2012-01-04') }.not_to raise_error
 	    end
 
 	  end
