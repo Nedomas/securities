@@ -9,7 +9,7 @@ module Securities
     class LookupException < StandardError ; end
 
     def initialize parameters
-    	@input = parameters.delete(' ')
+    	@input = parameters
     	if @input.empty?
     		raise LookupException, 'The lookup input was empty.'
     	end
